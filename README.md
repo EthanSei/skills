@@ -56,6 +56,7 @@ Packs are named bundles of related skills that can be installed and removed as a
 |-------|------|-------------|
 | code-discipline | — | Language-agnostic engineering discipline — minimal changes, no speculative code, clarity over cleverness |
 | speak-memory | — | Persistent story-based memory that tracks work across sessions with auto-compaction (~1.5k tokens) |
+| tdd | — | Test-driven development — red-green-refactor cycles with mandatory test runs and closing audit |
 
 ## Creating a New Skill
 
