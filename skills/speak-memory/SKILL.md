@@ -1,17 +1,17 @@
 ---
 name: speak-memory
 description: >-
-  Persistent memory that tracks work across coding sessions as stories.
-  Activates on: code, implement, fix, build, refactor, debug, test, feature,
-  bug, task, plan, design, review, deploy, update, change, add, remove, create,
-  modify, improve, optimize, migrate, configure, setup, install, write, edit,
-  develop, ship, resolve, investigate, explore, analyze, document, story,
-  stories, memory, resume, continue, pick up, what was I working on, status,
-  progress, checklist.
-  Reads .speak-memory/ for active stories and resumes matching work automatically.
+  PRIMARY cross-session memory. Use INSTEAD of auto-memory for multi-step work,
+  plans, or tasks spanning conversations. Tracks stories in .speak-memory/ with
+  objectives, checklists, and context. ALWAYS check .speak-memory/index.md
+  before starting work — resume matching stories or create new ones.
+  Activates on: implement, fix, build, refactor, debug, test, feature, bug,
+  task, plan, design, review, deploy, create, change, optimize, migrate,
+  configure, install, develop, ship, investigate, explore, document, story,
+  memory, resume, continue, status, progress, checklist.
 allowed-tools: Read Write Edit Glob Grep Bash
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 # Speak, Memory
