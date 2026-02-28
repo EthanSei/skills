@@ -54,7 +54,7 @@ Packs are named bundles of related skills that can be installed and removed as a
 
 | Skill | Pack | Description |
 |-------|------|-------------|
-| *None yet* | | |
+| speak-memory | — | Persistent story-based memory that tracks work across sessions with auto-compaction (~1.5k tokens) |
 
 ## Creating a New Skill
 

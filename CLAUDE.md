@@ -40,7 +40,7 @@ A skill can belong to multiple packs. Users install a pack via `/plugin install 
 ## When Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` with valid frontmatter
-2. Add the skill path to at least one pack in `.claude-plugin/marketplace.json`
+2. Consider adding the skill path to relevant packs in `.claude-plugin/marketplace.json`
 3. Update both tables in `README.md` (Skill Packs and Available Skills)
 
 ## When Creating a New Pack
