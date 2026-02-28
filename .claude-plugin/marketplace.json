@@ -1,0 +1,11 @@
+{
+  "name": "ethansei-skills",
+  "owner": {
+    "name": "Ethan S"
+  },
+  "metadata": {
+    "description": "Agent skills for Claude Code and other AI coding agents",
+    "version": "0.1.0"
+  },
+  "plugins": []
+}
