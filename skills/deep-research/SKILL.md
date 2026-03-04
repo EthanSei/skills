@@ -9,7 +9,7 @@ description: >-
   analyze approaches, scout, prior art, feasibility.
 allowed-tools: Read Glob Grep Bash Agent Write Edit WebSearch WebFetch ListMcpResourcesTool ReadMcpResourceTool
 metadata:
-  version: 0.2.0
+  version: 0.2.1
 ---
 
 # Deep Research
@@ -55,8 +55,9 @@ Before spawning agents, frame the research:
    Disconfirming evidence: "No established patterns exist; this is novel."
 
 5. **Set scope budget**: Declare upfront: "Budget: 5 research agents + 1 adversarial
-   challenge = 6 agent calls, investigating {N} hypotheses." When budget is exhausted,
-   synthesize what you have rather than expanding.
+   challenge = 6 agent calls, investigating N hypotheses." (substitute the actual
+   hypothesis count for N). When budget is exhausted, synthesize what you have
+   rather than expanding.
 
 Present hypotheses to the user before proceeding:
 ```
@@ -64,8 +65,11 @@ Hypotheses:
 1. [Question] — Prior belief: [X]. Would change if: [Y].
 2. ...
 
-Budget: 6 agents, {N} questions. Proceed?
+Budget: 6 agents, [hypothesis count] questions. Proceed?
 ```
+
+If the user declines or asks to revise, update the hypotheses and re-present.
+Do not spawn agents until the user confirms.
 
 ## Phase 2: Evidence Gathering
 
@@ -125,14 +129,18 @@ and log a warning. Continue with results from agents that succeeded.
 
 Merge all 5 finding arrays. Apply the synthesis rules from `references/synthesis.md`:
 
-1. **Deduplicate**: Merge identical findings; note corroborating sources.
-2. **Resolve conflicts**: Flag when agents disagree; note the resolution.
-3. **Grade evidence**: Flag any conclusion that rests entirely on speculative evidence.
+1. **Merge**: Collect all 5 JSON arrays into a single flat array. Tag each finding
+   with its source agent name. Note which agents failed or returned empty.
+2. **Deduplicate**: Merge identical findings; note corroborating sources.
+3. **Resolve conflicts**: Flag when agents disagree; note the resolution.
+4. **Grade evidence**: Flag any conclusion that rests entirely on speculative evidence.
    A conclusion needs at least one primary or secondary source to be credible.
-4. **Rank**: Sort by evidence_tier (primary first), then relevance, then corroboration.
-5. **Form preliminary conclusion**: Based on the ranked findings, form a preliminary
+5. **Rank**: Sort by evidence_tier (primary first), then relevance, then corroboration.
+   Cap the merged array at **30 findings** — drop low-relevance speculative findings
+   first to keep context manageable.
+6. **Form preliminary conclusion**: Based on the ranked findings, form a preliminary
    answer to each hypothesis. State whether the prior belief was confirmed or changed.
-6. **Generate approaches**: Propose **2-3 approaches** with trade-offs. Each approach
+7. **Generate approaches**: Propose **2-3 approaches** with trade-offs. Each approach
    must reference the evidence that supports it with tier tags.
 
 ## Phase 4: Adversarial Challenge
@@ -153,10 +161,19 @@ The devil's advocate agent's job:
 
 See `references/agent-roles.md` for the full devil's advocate prompt.
 
-If the conclusion survives the challenge, it's stronger. If the devil's advocate
-finds credible disconfirming evidence (primary or secondary tier), revise the
-conclusion and note the revision. If the challenge produces only speculative
-counterarguments, note them as dissent but don't change the recommendation.
+Handle the devil's advocate result:
+- **`conclusion_holds`**: The conclusion survives — it's stronger. Note any speculative
+  counterarguments as dissent but don't change the recommendation.
+- **`conclusion_weakened`**: The devil's advocate found credible disconfirming evidence
+  (primary or secondary tier). Revise the conclusion, note the revision, and
+  **re-generate approaches** (re-run synthesis Step 7) to reflect the updated position.
+- **`conclusion_overturned`**: The recommended approach is fundamentally flawed. Discard
+  it, revise all affected hypothesis conclusions, and **re-generate approaches from
+  scratch** based on the combined original + adversarial evidence.
+
+**Error handling**: If the devil's advocate agent fails (non-JSON output, timeout, or
+invalid structure), log a warning: "Devil's advocate failed — conclusion not adversarially
+tested. Reduce confidence by one level." Continue to Phase 5 with the untested conclusion.
 
 ## Phase 5: Verdict
 
@@ -225,17 +242,26 @@ After the verdict, output the **structured artifact** for downstream skills:
 }
 ```
 
+**No-findings edge case**: If all agents return empty arrays, output the structured
+artifact with `findings: []`, `approaches: []`, and `verdict.confidence: "low"`.
+Set `verdict.summary` to: "Research found no directly relevant prior art. Recommend
+exploratory implementation or breaking the task into smaller sub-problems."
+
 **speak-memory**: If an active story was loaded in Phase 1, use Write/Edit to update
 the story file — append to Recent Activity and update Current Context.
 
 ## Key Constraints
 
 - All research agents: **Opus** (`model: "opus"`) for maximum research quality.
+- **Agent execution caps**: Research agents: `max_turns: 30`. Devil's advocate: `max_turns: 20`.
 - Max **2 levels of nesting**: orchestrator → specialist. Specialists never spawn agents.
 - **Scope budget**: 5 research agents + 1 devil's advocate = 6 total. Do not expand.
+- **Findings cap**: Max 30 findings enter synthesis (after merge + dedup). Drop
+  low-relevance speculative findings first.
 - All **sub-agents** are read-only — no code modifications, no git changes. The
   orchestrator may write to `.speak-memory/` only.
-- Bash (sub-agents only) limited to dependency queries and skill search.
+- Bash (sub-agents only) limited to dependency queries (`npm ls`, `pip list`, `cargo tree`)
+  and skill search (`npx skills find`). No other Bash commands.
 - Conclusions resting entirely on speculative evidence must be flagged as low confidence.
 - The structured artifact stays in conversation context — no file writing.
 
