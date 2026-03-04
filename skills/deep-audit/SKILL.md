@@ -171,7 +171,7 @@ the story file — append to Recent Activity and update Current Context.
 
 ## Key Constraints
 
-- Audit agents: **Haiku** (fast, read-only). Fix agents: **Sonnet** (quality critical).
+- Audit agents: **Opus** (maximum finding quality). Fix agents: **Opus** (correct edits critical). Verify agent: **Sonnet**.
 - Max **2 levels of nesting**: orchestrator → specialist. Specialists never spawn agents.
 - Max **10 auto-fixes** per run. Excess P0/P1 items are reported but not fixed.
 - Fix agents always run with `isolation: "worktree"` — safe rollback if anything goes wrong.

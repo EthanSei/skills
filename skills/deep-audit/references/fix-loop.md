@@ -12,11 +12,11 @@ git worktree. One at a time.
 
 ```
 Orchestrator
-  └─ Fix Agent 1 (Sonnet, General-purpose, worktree) → diff reviewed → merged
-  └─ Fix Agent 2 (Sonnet, General-purpose, worktree) → diff reviewed → merged
+  └─ Fix Agent 1 (Opus, General-purpose, worktree) → diff reviewed → merged
+  └─ Fix Agent 2 (Opus, General-purpose, worktree) → diff reviewed → merged
   └─ ...
   └─ /simplify on all modified files (Phase 4.5)
-  └─ Verify Agent (Haiku, Explore) OR test runner
+  └─ Verify Agent (Sonnet, Explore) OR test runner
 ```
 
 Worktree isolation:
@@ -176,7 +176,7 @@ last clean commit with `git diff HEAD~1 -- {failing_file}`. Do NOT run
 regression, spawn a targeted fix agent to revert or correct it.
 
 **If no test runner (Explore spot-check):**
-Spawn a Haiku Explore agent with the fixed file list and the verify agent prompt
+Spawn a Sonnet Explore agent with the fixed file list and the verify agent prompt
 from `references/agent-roles.md`.
 
 ---

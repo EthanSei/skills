@@ -9,9 +9,9 @@ argument when calling the Agent tool. Replace `{file_list}` with the actual scop
 
 | Role | Model | Rationale |
 |------|-------|-----------|
-| All 5 audit agents | Haiku (default Explore) | Fast, read-only, low cost — quantity over depth |
-| Fix agents | Sonnet (General-purpose) | Quality matters when modifying code |
-| Verify agent | Haiku (Explore) | Read-only spot-check |
+| All 5 audit agents | Opus (Explore, `model: "opus"`) | Maximum finding quality — missed findings can't be fixed downstream |
+| Fix agents | Opus (General-purpose, `model: "opus"`) | Correct edits are critical — subtle fixes need deep understanding |
+| Verify agent | Sonnet (Explore, `model: "sonnet"`) | Post-fix spot-check — Sonnet is sufficient for syntax/import verification |
 
 ---
 
