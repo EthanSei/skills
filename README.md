@@ -55,6 +55,7 @@ Packs are named bundles of related skills that can be installed and removed as a
 | Skill | Pack | Description |
 |-------|------|-------------|
 | code-discipline | — | Language-agnostic engineering discipline — minimal changes, no speculative code, clarity over cleverness |
+| deep-research | — | On-demand deep research swarm — spawns specialist agents to investigate codebase patterns, web sources, MCP tools, skills, and dependencies; synthesizes findings with recommended approaches |
 | speak-memory | — | Persistent story-based memory that tracks work across sessions with auto-compaction (~1.5k tokens) |
 | tdd | — | Test-driven development — red-green-refactor cycles with mandatory test runs and closing audit |
 
