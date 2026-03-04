@@ -1,54 +1,68 @@
-# Research Report — {task_summary}
+# Research Verdict — {task_summary}
 
 **Task:** {task_description}
 **Tech stack:** {tech_stack}
-**Agents completed:** {n}/5
+**Agents completed:** {n}/6
+**Scope:** {N} hypotheses, 6 agent calls
 
 ---
 
-## Key Findings
+## Hypotheses
 
-### Codebase
-{For each high/medium finding from codebase agent:}
-- **{source}** — {finding}
-  → {recommendation}
+{For each hypothesis:}
 
-### Web Research
-{For each high/medium finding from web-research agent:}
-- **{source}** — {finding}
-  → {recommendation}
-
-### Available Tools & MCP
-{For each high/medium finding from tools-mcp agent:}
-- **{source}** — {finding}
-  → {recommendation}
-
-### Relevant Skills
-{For each high/medium finding from skills agent:}
-- **{source}** — {finding}
-  → {recommendation}
-
-### Dependencies
-{For each high/medium finding from dependencies agent:}
-- **{source}** — {finding}
-  → {recommendation}
-
-{Omit any section where the agent returned no high/medium findings.}
+### H{n}: {question}
+**Prior belief:** {expected answer}
+**Disconfirming criteria:** {what would change the answer}
+**Result:** confirmed | changed | inconclusive
+**Evidence:** {N} primary, {N} secondary, {N} speculative
+**Summary:** {one sentence conclusion}
 
 ---
 
-## Conflicts & Decisions
+## Verdict
 
-{If any conflicts were found during synthesis:}
-- **{conflict description}** — {resolution or decision needed}
+**{one sentence answer}**
 
-{If no conflicts: omit this section.}
+**Confidence:** {high|medium|low} — {justification}
+
+{If low confidence:}
+> Warning: This conclusion rests on {speculative|limited} evidence.
+> Consider investigating further before committing to implementation.
+
+---
+
+## Evidence
+
+{Numbered list, sorted by tier:}
+
+1. [primary] {source} — {finding}
+2. [primary] {source} — {finding}
+3. [secondary] {source} — {finding}
+4. [speculative] {source} — {finding}
+
+{Flag if any conclusion is speculative-only:}
+> Items marked [speculative] have no primary or secondary corroboration.
+
+---
+
+## Dissent
+
+**Strongest counterargument:** {from devil's advocate}
+
+**Devil's advocate result:** conclusion holds | conclusion weakened | conclusion overturned
+
+{If counterevidence found:}
+- [{tier}] {source} — {disconfirming finding}
+
+{If no credible counterevidence:}
+The conclusion appears robust. No credible disconfirming evidence found.
 
 ---
 
 ## Recommended Approaches
 
-### Approach 1: {name} ⭐ Recommended
+### Approach 1: {name} — Recommended
 {summary}
 
 **Pros:**
@@ -57,8 +71,10 @@
 **Cons:**
 - {con}
 
+**Evidence:** {list of supporting findings with [tier] tags}
 **Relevant files:** {list}
 **Dependencies needed:** {list or "none"}
+**Estimated complexity:** {low|medium|high}
 
 ---
 
@@ -71,8 +87,7 @@
 **Cons:**
 - {con}
 
-**Relevant files:** {list}
-**Dependencies needed:** {list or "none"}
+**Evidence:** {list}
 
 ---
 
@@ -81,11 +96,13 @@
 
 ---
 
-## Next Steps
+## Action
 
-Recommended: proceed with **{recommended approach name}**. If `deep-plan` is
-installed, use it to create a detailed implementation plan. Otherwise, begin
-implementation directly or create a plan manually.
+{What to do next — implement X, investigate Y further, do nothing}
+
+{If deep-plan is installed:}
+Recommended: run `deep-plan` with the structured artifact to create a detailed
+implementation plan.
 
 ---
 
