@@ -18,9 +18,6 @@ Hypothesis-driven research swarm. Spawns specialist agents to investigate a task
 grades every finding by evidence quality, then adversarially challenges the emerging
 conclusion before delivering a structured verdict.
 
-Mirrors TDD discipline: hypothesis (RED) → evidence gathering (GREEN) → adversarial
-challenge (REFACTOR).
-
 ## When This Skill Activates
 
 Trigger on explicit research requests:
