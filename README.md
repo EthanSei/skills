@@ -46,7 +46,6 @@ Packs are named bundles of related skills that can be installed and removed as a
 
 | Pack | Description | Skills |
 |------|-------------|--------|
-| *None yet* | | |
 
 ## Available Skills
 
@@ -55,6 +54,7 @@ Packs are named bundles of related skills that can be installed and removed as a
 | Skill | Pack | Description |
 |-------|------|-------------|
 | code-discipline | — | Language-agnostic engineering discipline — minimal changes, no speculative code, clarity over cleverness |
+| deep-audit | — | Post-execution deep audit with auto-heal — spawns specialist agents for quality, security, tests, performance, and consistency; auto-fixes P1 issues, surfaces P0 for confirmation |
 | deep-research | — | Hypothesis-driven deep research swarm — forms hypotheses, gathers evidence-graded findings across codebase, web, MCP tools, skills, and dependencies, then adversarially challenges conclusions before delivering a structured verdict |
 | speak-memory | — | Persistent story-based memory that tracks work across sessions with auto-compaction (~1.5k tokens) |
 | tdd | — | Test-driven development — red-green-refactor cycles with mandatory test runs and closing audit |
