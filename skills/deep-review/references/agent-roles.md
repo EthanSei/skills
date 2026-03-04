@@ -1,4 +1,4 @@
-# Agent Roles — Deep Audit
+# Agent Roles — Deep Review
 
 Full prompt templates for each specialist audit agent. Paste these as the `prompt`
 argument when calling the Agent tool. Replace `{file_list}` with the actual scope.
@@ -15,7 +15,7 @@ argument when calling the Agent tool. Replace `{file_list}` with the actual scop
 
 ---
 
-## Spawning the Audit (Phase 2)
+## Spawning the Review (Phase 2)
 
 Call all 5 Agent tools in a **single response message** so they run in parallel.
 Use `subagent_type: "Explore"` for all audit agents.
