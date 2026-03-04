@@ -1,4 +1,4 @@
-# Fix Loop — Deep Audit
+# Fix Loop — Deep Review
 
 Patterns for constructing fix agents, passing context, handling retries, and
 escalating unfixable issues.

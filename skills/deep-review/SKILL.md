@@ -1,29 +1,29 @@
 ---
-name: deep-audit
+name: deep-review
 description: >-
-  Post-execution deep audit and auto-heal. Spawns 5 specialist sub-agents
+  Post-execution deep review and auto-heal. Spawns 5 specialist sub-agents
   to evaluate code quality, security, test coverage, performance, and
   codebase consistency in parallel, then auto-fixes P1 issues (surfaces P0
   for confirmation), runs /simplify on fixed files, and verifies tests pass.
-  Activates after: done implementing, finished, completed task, shipped,
-  code review, audit, deep audit, evaluate, post-execution, implementation
-  complete, ready to merge, ready to review, all done, closing audit.
+  Activates after: done, finished, all done, ready to review, ship it,
+  review, code review, deep review, evaluate, post-execution, implementation
+  complete, ready to merge, closing review.
 allowed-tools: Read Glob Grep Bash Agent Write Edit
 metadata:
   version: 0.2.0
 ---
 
-# Deep Audit
+# Deep Review
 
-Post-execution audit and auto-heal. Spawns specialist sub-agents to find issues,
+Post-execution review and auto-heal. Spawns specialist sub-agents to find issues,
 then fixes them. Runs after implementation is complete — never during.
 
 ## When This Skill Activates
 
 Trigger after execution completes:
 - User says: "done", "finished", "all done", "ready to review", "ship it"
-- User explicitly requests: "audit", "code review", "evaluate", "deep audit"
-- Another skill's closing checklist runs (e.g., TDD closing audit)
+- User explicitly requests: "review", "code review", "evaluate", "deep review"
+- Another skill's closing checklist runs (e.g., TDD closing review)
 
 Do NOT activate mid-implementation. This skill is a closing gate, not a blocker.
 
@@ -33,22 +33,22 @@ Before spawning agents, establish scope:
 
 1. Run `git diff --name-only HEAD` to get the list of changed files. If the working
    tree is clean, use `git diff --name-only HEAD~1` (last commit). If `HEAD~1` fails
-   (repo has only one commit), ask the user to specify which files to audit.
+   (repo has only one commit), ask the user to specify which files to review.
 2. Capture the repo root: `git rev-parse --show-toplevel`. Pass this as `{repo_root}`
    to the consistency agent in Phase 2.
 3. Check for uncommitted changes: `git status --porcelain`. If non-empty, warn the user:
    "Uncommitted changes detected — fix agents will be applied on top of your working
    state. Consider committing or stashing first." Do not block; continue if user agrees.
-4. If no git context: ask the user which files or directories to audit.
+4. If no git context: ask the user which files or directories to review.
 5. **speak-memory**: If `.speak-memory/index.md` exists and an active story matches
    the current work, read it. Use the story's Current Context and Checklist to
-   sharpen the audit scope to relevant modules and behaviors. If `.speak-memory/`
+   sharpen the review scope to relevant modules and behaviors. If `.speak-memory/`
    does not exist, skip this step.
 6. If scope exceeds 50 files, ask user to narrow it before proceeding.
 
-Announce: "Starting deep audit across {file_count} files." (substitute the actual count)
+Announce: "Starting deep review across {file_count} files." (substitute the actual count)
 
-## Phase 2: Parallel Audit
+## Phase 2: Parallel Review
 
 Spawn all 5 agents **in a single message** (parallel Agent tool calls). Each agent
 returns a JSON findings array — see `references/agent-roles.md` for full prompts.
@@ -181,7 +181,7 @@ the story file — append to Recent Activity and update Current Context.
 
 ## Closing Checklist
 
-Do not declare the audit done until all boxes are checked:
+Do not declare the review done until all boxes are checked:
 
 - [ ] All P0 findings addressed (confirmed fix, or explicitly deferred by user)
 - [ ] All P1 findings auto-fixed (or flagged unresolvable after 2 attempts)
@@ -194,7 +194,7 @@ Do not declare the audit done until all boxes are checked:
 
 Load only when needed:
 
-- `references/agent-roles.md` — Full prompt templates for each specialist audit agent
+- `references/agent-roles.md` — Full prompt templates for each specialist review agent
 - `references/scoring.md` — P0/P1/P2 rubric with examples and edge cases
 - `references/fix-loop.md` — Fix agent templates, retry logic, escalation patterns
 - `assets/report-template.md` — Audit report format

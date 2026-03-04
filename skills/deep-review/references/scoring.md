@@ -1,7 +1,7 @@
-# Scoring Rubric — Deep Audit
+# Scoring Rubric — Deep Review
 
 Severity classification for findings from specialist agents. When in doubt, escalate
-to the higher severity — the goal is thorough audit, not false reassurance.
+to the higher severity — the goal is thorough review, not false reassurance.
 
 ---
 
