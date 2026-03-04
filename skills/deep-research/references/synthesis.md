@@ -1,4 +1,4 @@
-# Synthesis Rules — Deep Research
+# Deep Research — Synthesis Rules
 
 How to merge, deduplicate, rank, and generate approaches from the 5 research
 agents' findings.
@@ -92,6 +92,8 @@ Estimated complexity: Low / Medium / High
   building from scratch.
 - **Always include at least one alternative** that takes a meaningfully different
   direction (different library, different architecture, different trade-off).
+- **Minimum 2 approaches**: If findings only support one approach, add a "build from
+  scratch / manual implementation" alternative noting the lack of prior art.
 - **Never include more than 3 approaches** — too many options create analysis paralysis.
 - If one approach clearly dominates, say so. Mark it `recommended: true`.
 - If the choice is genuinely a toss-up, say that too and explain what the deciding
@@ -121,3 +123,11 @@ existing code."
 **Conflicting recommendations**: If findings genuinely conflict (e.g., half say
 "use library X" and half say "avoid X"), present both sides and make the conflict
 a decision point in the approaches rather than hiding it.
+
+**All findings filtered as low relevance**: If all findings are `low` after
+filtering, promote the top 3-5 to the report with a note that research confidence
+is low. Never present an empty report when findings exist.
+
+**Agent failures**: If one or more agents fail (invalid output, timeout), note
+which agents failed in the report header and proceed with available results.
+A research report from 3 agents is still valuable.

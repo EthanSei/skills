@@ -7,7 +7,7 @@ description: >-
   report with 2-3 recommended approaches. Activates on: research, investigate,
   discover, deep research, how should I, what's the best way, explore options,
   analyze approaches, scout, reconnaissance, prior art, feasibility.
-allowed-tools: Read Glob Grep Bash Agent WebSearch WebFetch ListMcpResourcesTool ReadMcpResourceTool
+allowed-tools: Read Glob Grep Bash Agent Write Edit WebSearch WebFetch ListMcpResourcesTool ReadMcpResourceTool
 metadata:
   version: 0.1.0
 ---
@@ -34,8 +34,11 @@ Before spawning agents, establish what we're researching:
    to clarify before proceeding. Identify technology keywords (languages, frameworks,
    libraries mentioned or implied by the codebase).
 2. **Identify repo context**: Run `git rev-parse --show-toplevel` to get `{repo_root}`.
+   If this fails (not a git repo), set `{repo_root}` to the current working directory.
    Check for `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc. to identify
-   the language/framework stack. Pass this as `{tech_stack}` to agents.
+   the language/framework stack. Pass this as `{tech_stack}`. If no manifests are found,
+   set `{tech_stack}` to the primary file extensions present (e.g., "TypeScript, React"
+   inferred from `.tsx` files) or ask the user.
 3. **speak-memory**: If `.speak-memory/index.md` exists and an active story matches
    the current work, read it. Use the story's context to focus the research scope.
    If `.speak-memory/` does not exist, skip this step.
@@ -77,6 +80,13 @@ returns a JSON findings array — see `references/agent-roles.md` for full promp
 
 Return empty array `[]` if no relevant findings in that domain.
 
+Instruct each agent: "Return your top 10 findings maximum, prioritized by relevance."
+
+**Error handling**: If an agent returns non-JSON output (e.g., markdown-wrapped),
+strip code fences and attempt JSON extraction. If extraction fails or the agent
+times out, treat as empty array `[]` and log a warning. Continue with results
+from agents that succeeded.
+
 ## Phase 3: Synthesis
 
 Merge all 5 finding arrays. Apply the synthesis rules from `references/synthesis.md`:
@@ -103,13 +113,26 @@ Output a concise report to the user (use `assets/report-template.md` for formatt
 - Relevant files, tools, and skills discovered
 
 **Structured artifact**: After the user-facing report, output a JSON block that
-downstream skills (e.g., `deep-plan`) can consume:
+downstream skills (e.g., a future `deep-plan`) can consume:
 
 ```json
 {
   "task": "original task description",
   "tech_stack": ["identified technologies"],
-  "findings": [... merged findings array ...],
+  "metadata": {
+    "agents_completed": ["codebase", "web-research", "tools-mcp", "skills", "dependencies"],
+    "agents_failed": [],
+    "total_findings": 0,
+    "timestamp": "ISO-8601"
+  },
+  "findings": [... merged findings array (high/medium only) ...],
+  "conflicts": [
+    {
+      "description": "what conflicts",
+      "agents": ["which agents disagree"],
+      "resolution": "how it was resolved, or null if user must decide"
+    }
+  ],
   "approaches": [
     {
       "name": "Approach A",
@@ -117,9 +140,11 @@ downstream skills (e.g., `deep-plan`) can consume:
       "pros": ["..."],
       "cons": ["..."],
       "recommended": true,
+      "supported_by": ["finding sources that back this approach"],
       "relevant_files": ["paths from codebase agent"],
       "relevant_tools": ["MCP tools/skills discovered"],
-      "dependencies_needed": ["new packages, if any"]
+      "dependencies_needed": ["new packages, if any"],
+      "estimated_complexity": "low|medium|high"
     }
   ]
 }
@@ -132,8 +157,9 @@ the story file — append to Recent Activity and update Current Context.
 
 - All research agents: **Opus** (`model: "opus"`) for maximum research quality.
 - Max **2 levels of nesting**: orchestrator → specialist. Specialists never spawn agents.
-- All agents are **read-only** — no code modifications, no file writes, no git changes.
-- Bash limited to dependency queries and skill search — no builds, no installs.
+- All **sub-agents** are read-only — no code modifications, no git changes. The
+  orchestrator may write to `.speak-memory/` only.
+- Bash (sub-agents only) limited to dependency queries and skill search — no builds, no installs.
 - If an agent returns no findings (empty array), that's fine — not every task needs
   all 5 research dimensions.
 - The structured artifact stays in conversation context — no file writing.
@@ -142,7 +168,7 @@ the story file — append to Recent Activity and update Current Context.
 
 Do not declare the research done until all boxes are checked:
 
-- [ ] All 5 research agents completed (or returned empty)
+- [ ] All 5 research agents completed (returned valid JSON) or failed (logged as warning)
 - [ ] Findings deduplicated and conflicts resolved
 - [ ] 2-3 approaches presented with trade-offs and recommendation
 - [ ] Structured artifact output for downstream consumption

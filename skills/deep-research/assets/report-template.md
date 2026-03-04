@@ -83,8 +83,9 @@
 
 ## Next Steps
 
-Recommended: proceed with **{recommended approach name}** using `deep-plan` to
-create a detailed implementation plan, or begin implementation directly.
+Recommended: proceed with **{recommended approach name}**. If `deep-plan` is
+installed, use it to create a detailed implementation plan. Otherwise, begin
+implementation directly or create a plan manually.
 
 ---
 
