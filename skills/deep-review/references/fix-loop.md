@@ -12,11 +12,11 @@ git worktree. One at a time.
 
 ```
 Orchestrator
-  └─ Fix Agent 1 (Opus, General-purpose, worktree) → diff reviewed → merged
-  └─ Fix Agent 2 (Opus, General-purpose, worktree) → diff reviewed → merged
+  └─ Fix Agent 1 (Opus, read-write, worktree) → diff reviewed → merged
+  └─ Fix Agent 2 (Opus, read-write, worktree) → diff reviewed → merged
   └─ ...
   └─ /simplify on all modified files (Phase 4.5)
-  └─ Verify Agent (Sonnet, Explore) OR test runner
+  └─ Verify Agent (Sonnet, read-only) OR test runner
 ```
 
 Worktree isolation:
@@ -27,8 +27,8 @@ Worktree isolation:
 
 ## Fix Agent Prompt Template
 
-Paste this as the agent `prompt`, substituting `{...}` placeholders. Use
-`subagent_type: "general-purpose"`, `isolation: "worktree"`, tools `Read, Edit, Write, Glob, Grep, Bash`.
+Paste this as the sub-agent prompt, substituting `{...}` placeholders. Spawn with
+full tool access in an isolated git worktree.
 
 ```
 You are a focused code fix agent. Your job is to apply one specific fix.
@@ -118,7 +118,7 @@ For each P0 finding, present in this exact format before spawning any fix agent:
 Choice [fix/skip/manual]:
 ```
 
-- **fix**: use the same General-purpose fix agent pattern as P1
+- **fix**: use the same fix agent pattern as P1
 - **skip**: log in report as "Known Issue (skipped)"
 - **manual**: log in report as "Deferred to user"
 
@@ -175,8 +175,8 @@ last clean commit with `git diff HEAD~1 -- {failing_file}`. Do NOT run
 `git stash` (risks hiding uncommitted work). If the fix introduced the
 regression, spawn a targeted fix agent to revert or correct it.
 
-**If no test runner (Explore spot-check):**
-Spawn a Sonnet Explore agent with the fixed file list and the verify agent prompt
+**If no test runner (spot-check):**
+Spawn a read-only Sonnet agent with the fixed file list and the verify agent prompt
 from `references/agent-roles.md`.
 
 ---

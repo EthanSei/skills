@@ -1,24 +1,24 @@
 # Agent Roles — Deep Review
 
-Full prompt templates for each specialist audit agent. Paste these as the `prompt`
-argument when calling the Agent tool. Replace `{file_list}` with the actual scope.
+Full prompt templates for each specialist audit agent. Pass these as the prompt
+when spawning each sub-agent. Replace `{file_list}` with the actual scope.
 
 ---
 
 ## Model Selection
 
-| Role | Model | Rationale |
-|------|-------|-----------|
-| All 5 audit agents | Opus (Explore, `model: "opus"`) | Maximum finding quality — missed findings can't be fixed downstream |
-| Fix agents | Opus (General-purpose, `model: "opus"`) | Correct edits are critical — subtle fixes need deep understanding |
-| Verify agent | Sonnet (Explore, `model: "sonnet"`) | Post-fix spot-check — Sonnet is sufficient for syntax/import verification |
+| Role | Model | Access | Rationale |
+|------|-------|--------|-----------|
+| All 5 audit agents | Opus | read-only | Maximum finding quality — missed findings can't be fixed downstream |
+| Fix agents | Opus | read-write | Correct edits are critical — subtle fixes need deep understanding |
+| Verify agent | Sonnet | read-only | Post-fix spot-check — Sonnet is sufficient for syntax/import verification |
 
 ---
 
 ## Spawning the Review (Phase 2)
 
-Call all 5 Agent tools in a **single response message** so they run in parallel.
-Use `subagent_type: "Explore"` for all audit agents.
+Spawn all 5 audit agents in a **single response message** so they run in parallel.
+All audit agents are read-only (no file writes, no terminal commands).
 
 ---
 
@@ -266,7 +266,7 @@ If no inconsistencies found, return [].
 
 ## Verification Agent (Phase 5, no test runner)
 
-Used only when no test runner is detected. Use `subagent_type: "Explore"`.
+Used only when no test runner is detected. Spawn as a read-only agent (Sonnet).
 
 ```
 You are a code reviewer doing a quick post-fix spot-check. Review these recently
@@ -297,7 +297,7 @@ Return a JSON object:
 
 ## Fix Agent Construction (Phase 4)
 
-Use `subagent_type: "general-purpose"` for all fix agents.
+Spawn fix agents with full read-write tool access (Opus).
 
 See `references/fix-loop.md` for the canonical fix agent prompt template,
 worktree merge process, and retry/escalation patterns.
