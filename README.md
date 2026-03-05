@@ -54,8 +54,9 @@ Packs are named bundles of related skills that can be installed and removed as a
 | Skill | Pack | Description |
 |-------|------|-------------|
 | code-discipline | — | Language-agnostic engineering discipline — minimal changes, no speculative code, clarity over cleverness |
-| deep-review | — | Post-execution deep review with auto-heal — spawns specialist agents for quality, security, tests, performance, and consistency; auto-fixes P1 issues, surfaces P0 for confirmation |
+| deep-plan | — | Multi-perspective architecture planning swarm — spawns 5 specialist agents (API, data, security, performance, maintainability) to evaluate trade-offs, then a trade-off arbiter stress-tests the plan before producing an implementation-ready architecture decision record |
 | deep-research | — | Hypothesis-driven deep research swarm — forms hypotheses, gathers evidence-graded findings across codebase, web, MCP tools, skills, and dependencies, then adversarially challenges conclusions before delivering a structured verdict |
+| deep-review | — | Post-execution deep review with auto-heal — spawns specialist agents for quality, security, tests, performance, and consistency; auto-fixes P1 issues, surfaces P0 for confirmation |
 | speak-memory | — | Persistent story-based memory that tracks work across sessions with auto-compaction (~1.5k tokens) |
 | tdd | — | Test-driven development — red-green-refactor cycles with mandatory test runs and closing audit |
 
