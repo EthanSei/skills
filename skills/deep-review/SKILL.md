@@ -8,9 +8,9 @@ description: >-
   Activates after: done, finished, all done, ready to review, ship it,
   review, code review, deep review, evaluate, post-execution, implementation
   complete, ready to merge, closing review.
-allowed-tools: Read Glob Grep Bash Agent Write Edit
+allowed-tools: Read Glob Grep Bash Write Edit
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Deep Review
@@ -50,16 +50,16 @@ Announce: "Starting deep review across {file_count} files." (substitute the actu
 
 ## Phase 2: Parallel Review
 
-Spawn all 5 agents **in a single message** (parallel Agent tool calls). Each agent
-returns a JSON findings array — see `references/agent-roles.md` for full prompts.
+Spawn all 5 audit agents **in parallel** (single message, concurrent sub-agent calls).
+Each agent returns a JSON findings array — see `references/agent-roles.md` for full prompts.
 
-| Agent | Subagent Type | Focus |
-|-------|---------------|-------|
-| code-quality | Explore | Naming, complexity, dead code, duplication, patterns |
-| security | Explore | OWASP top 10, injection, secrets, auth/authz |
-| test-coverage | Explore | Missing tests, edge cases, unhappy paths, assertions |
-| performance | Explore | N+1 queries, blocking ops, unnecessary loops, memory |
-| consistency | Explore | Reinvented patterns, convention drift, divergence from codebase norms |
+| Agent | Access | Focus |
+|-------|--------|-------|
+| code-quality | read-only | Naming, complexity, dead code, duplication, patterns |
+| security | read-only | OWASP top 10, injection, secrets, auth/authz |
+| test-coverage | read-only | Missing tests, edge cases, unhappy paths, assertions |
+| performance | read-only | N+1 queries, blocking ops, unnecessary loops, memory |
+| consistency | read-only | Reinvented patterns, convention drift, divergence from codebase norms |
 
 All 5 audit agents: tools = `Read, Glob, Grep` (no Bash — avoids approval spam).
 The **consistency** agent additionally receives `{repo_root}` so it can search the
@@ -112,7 +112,7 @@ the audit loop.
 
 ### P1 Auto-Fix (sequential, worktree-isolated)
 
-For each P1 finding, spawn one General-purpose agent with `isolation: "worktree"`.
+For each P1 finding, spawn one fix agent (Opus) in an isolated git worktree.
 Run sequentially — do not parallelize fix agents (prevents branch conflicts).
 
 Instruct the fix agent:
@@ -152,8 +152,8 @@ After all fixes and the simplify pass (Phase 4.5) are applied:
    is pre-existing. If tests pass at the baseline but fail at HEAD, a fix introduced a
    regression — spawn a targeted fix agent to revert or correct it. Regression fixes
    do not count against the Phase 4 auto-fix budget.
-3. **If not found**: spawn a quick Explore agent to spot-check each fixed file for
-   obvious syntax errors or broken imports.
+3. **If not found**: spawn a quick read-only agent (Sonnet) to spot-check each fixed file
+   for obvious syntax errors or broken imports.
 
 Do not skip verification.
 
@@ -171,7 +171,7 @@ the story file — append to Recent Activity and update Current Context.
 
 ## Key Constraints
 
-- Audit agents: **Opus** (maximum finding quality). Fix agents: **Opus** (correct edits critical). Verify agent: **Sonnet**.
+- Audit agents: **Opus**, read-only (maximum finding quality). Fix agents: **Opus**, read-write (correct edits critical). Verify agent: **Sonnet**, read-only.
 - Max **2 levels of nesting**: orchestrator → specialist. Specialists never spawn agents.
 - Max **10 auto-fixes** per run. Excess P0/P1 items are reported but not fixed.
 - Fix agents always run with `isolation: "worktree"` — safe rollback if anything goes wrong.
